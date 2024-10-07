@@ -19,24 +19,29 @@ class SpookyCharacterAnimation extends StatefulWidget {
   const SpookyCharacterAnimation({super.key});
 
   @override
-  _SpookyCharacterAnimationState createState() => _SpookyCharacterAnimationState();
+  _SpookyCharacterAnimationState createState() =>
+      _SpookyCharacterAnimationState();
 }
 
 class _SpookyCharacterAnimationState extends State<SpookyCharacterAnimation> {
-  bool _isVisible = true;
+  // Initial positions for the ghost and bat
+  double _ghostYPosition = 0;
+  double _ghostXPosition = 0;
+  double _batXPosition = -150;
   double _rotationAngle = 0;
 
-  // Toggle visibility of a spooky character
-  void toggleVisibility() {
-    setState(() {
-      _isVisible = !_isVisible;
-    });
-  }
+  bool _isPumpkinVisible = false; // Initially hidden Pumpkinhead
 
-  // Rotate the spooky character
-  void rotateGhost() {
+
+  void moveCharacters() {
     setState(() {
-      _rotationAngle += 3.14 * 2; 
+      _ghostYPosition = _ghostYPosition == 0 ? -100 : 0; 
+      _ghostXPosition = _ghostXPosition == 0 ? 150 : 0; 
+
+      _batXPosition = _batXPosition == -150 ? 150 : -150; 
+
+      _rotationAngle += 3.14 / 2; 
+      _isPumpkinVisible = !_isPumpkinVisible; 
     });
   }
 
@@ -44,50 +49,65 @@ class _SpookyCharacterAnimationState extends State<SpookyCharacterAnimation> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Animated Spooky Characters'),
+        title: const Text('Spooky Halloween Animation'),
       ),
       body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+        child: Stack(
+          alignment: Alignment.center,
           children: [
-            GestureDetector(
-              onTap: toggleVisibility,
-              child: AnimatedOpacity(
-                opacity: _isVisible ? 1.0 : 0.0,
-                duration: const Duration(seconds: 1),
-                curve: Curves.easeInOut, 
-                child: Column(
-                  children: [
-                    const SizedBox(height: 20),
-                    Image.asset(
-                      'assets/images/ghost.png', 
-                      width: 200,
-                      height: 200,
-                      fit: BoxFit.cover,
-                    ),
-                  ],
+            // Ghost - Moves up/down, left/right, and rotates on tap
+            AnimatedPositioned(
+              duration: const Duration(seconds: 2),
+              curve: Curves.easeInOut,
+              top: _ghostYPosition,
+              left: _ghostXPosition,
+              child: GestureDetector(
+                onTap: moveCharacters, 
+                child: AnimatedRotation(
+                  turns: _rotationAngle / (2 * 3.14),
+                  duration: const Duration(seconds: 2),
+                  child: Image.asset(
+                    'assets/images/ghost.png', 
+                    width: 200,
+                    height: 200,
+                    fit: BoxFit.cover,
+                  ),
                 ),
               ),
             ),
-            const SizedBox(height: 20),
-            GestureDetector(
-              onTap: rotateGhost,
-              child: AnimatedRotation(
-                turns: _rotationAngle / (2 * 3.14), 
-                duration: const Duration(seconds: 2),
+            // Bat - Moves horizontally across the screen
+            AnimatedPositioned(
+              duration: const Duration(seconds: 2),
+              curve: Curves.easeInOut,
+              left: _batXPosition,
+              top: 50, 
+              child: GestureDetector(
+                onTap: moveCharacters, 
                 child: Image.asset(
-                  'assets/images/bat.png', 
-                  width: 100,
-                  height: 100,
+                  'assets/images/bat.png', // Replace with your bat image
+                  width: 150,
+                  height: 150,
                   fit: BoxFit.cover,
                 ),
               ),
             ),
+            // Pumpkinhead - Visible when tapped
+            if (_isPumpkinVisible)
+              AnimatedOpacity(
+                duration: const Duration(seconds: 2),
+                opacity: _isPumpkinVisible ? 1.0 : 0.0,
+                child: Image.asset(
+                  'assets/images/Pumpkinhead.png', 
+                  width: 150,
+                  height: 150,
+                  fit: BoxFit.cover,
+                ),
+              ),
           ],
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: toggleVisibility,
+        onPressed: moveCharacters,
         child: const Icon(Icons.play_arrow),
       ),
     );
