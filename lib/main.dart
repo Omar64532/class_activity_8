@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:audioplayers/audioplayers.dart';
 
 void main() {
   runApp(MyApp());
@@ -25,6 +26,14 @@ class SpookyCharacterAnimation extends StatefulWidget {
 class _SpookyCharacterAnimationState extends State<SpookyCharacterAnimation> {
   bool _isVisible = true;
   double _rotationAngle = 0;
+  late AudioPlayer _audioPlayer;
+
+  @override
+  void initState() {
+    super.initState();
+    _audioPlayer = AudioPlayer();
+    _playLoopingAudio(); // Play audio when the app starts
+  }
 
   // Toggle visibility of a spooky character
   void toggleVisibility() {
@@ -38,6 +47,18 @@ class _SpookyCharacterAnimationState extends State<SpookyCharacterAnimation> {
     setState(() {
       _rotationAngle += 3.14 * 2; 
     });
+  }
+
+  @override
+  void dispose() {
+    _audioPlayer.dispose(); // Dispose of the audio player when not needed
+    super.dispose();
+  }
+
+  void _playLoopingAudio() async {
+    await _audioPlayer.setReleaseMode(ReleaseMode.loop); // Loop the audio
+    await _audioPlayer
+        .play(AssetSource('audio/Hallowed_Ground.wav')); // Play the audio file
   }
 
   @override
