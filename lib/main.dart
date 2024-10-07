@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:audioplayers/audioplayers.dart';
 
 void main() {
   runApp(MyApp());
@@ -11,125 +10,82 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: SpookyCharacterAnimation(),
+      home: WinningElementScreen(),
     );
   }
 }
 
-class SpookyCharacterAnimation extends StatefulWidget {
-  const SpookyCharacterAnimation({super.key});
+class WinningElementScreen extends StatefulWidget {
+  const WinningElementScreen({super.key});
 
   @override
-  _SpookyCharacterAnimationState createState() =>
-      _SpookyCharacterAnimationState();
+  _WinningElementScreenState createState() => _WinningElementScreenState();
 }
 
-class _SpookyCharacterAnimationState extends State<SpookyCharacterAnimation> {
-  // Initial positions for the ghost and bat
-  double _ghostYPosition = 0;
-  double _ghostXPosition = 0;
-  double _batXPosition = -150;
-  double _rotationAngle = 0;
-  late AudioPlayer _audioPlayer;
+class _WinningElementScreenState extends State<WinningElementScreen> {
+  double _treasureXPosition = 0;
+  double _treasureYPosition = 0;
+  bool _isTreasureFound = false;
 
-  @override
-  void initState() {
-    super.initState();
-    _audioPlayer = AudioPlayer();
-    _playLoopingAudio(); // Play audio when the app starts
-  }
-
-  bool _isPumpkinVisible = false; // Initially hidden Pumpkinhead
-
-
-  void moveCharacters() {
+  // Function to hide and move the treasure around randomly
+  void moveTreasure() {
     setState(() {
-      _ghostYPosition = _ghostYPosition == 0 ? -100 : 0; 
-      _ghostXPosition = _ghostXPosition == 0 ? 150 : 0; 
-
-      _batXPosition = _batXPosition == -150 ? 150 : -150; 
-
-      _rotationAngle += 3.14 / 2; 
-      _isPumpkinVisible = !_isPumpkinVisible; 
+      _treasureXPosition = (100 + (100 * (0.5 - (0.5))));
+      _treasureYPosition = (100 + (100 * (0.5 - (0.5))));
     });
   }
 
-  @override
-  void dispose() {
-    _audioPlayer.dispose(); // Dispose of the audio player when not needed
-    super.dispose();
-  }
-
-  void _playLoopingAudio() async {
-    await _audioPlayer.setReleaseMode(ReleaseMode.loop); // Loop the audio
-    await _audioPlayer
-        .play(AssetSource('audio/Hallowed_Ground.wav')); // Play the audio file
+  // Function to detect if the correct item (treasure) is clicked
+  void treasureFound() {
+    setState(() {
+      _isTreasureFound = true; 
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Spooky Halloween Animation'),
+        title: const Text('Find the Treasure!'),
       ),
       body: Center(
         child: Stack(
           alignment: Alignment.center,
           children: [
-            // Ghost - Moves up/down, left/right, and rotates on tap
+            // Moving the treasure (correct item)
             AnimatedPositioned(
               duration: const Duration(seconds: 2),
-              curve: Curves.easeInOut,
-              top: _ghostYPosition,
-              left: _ghostXPosition,
+              top: _treasureYPosition,
+              left: _treasureXPosition,
               child: GestureDetector(
-                onTap: moveCharacters, 
-                child: AnimatedRotation(
-                  turns: _rotationAngle / (2 * 3.14),
-                  duration: const Duration(seconds: 2),
-                  child: Image.asset(
-                    'assets/images/ghost.png', 
-                    width: 200,
-                    height: 200,
-                    fit: BoxFit.cover,
+                onTap: treasureFound, 
+                child: Image.asset(
+                  'assets/images/treasure.png', 
+                  width: 100,
+                  height: 100,
+                ),
+              ),
+            ),
+
+            // Display message when treasure is found
+            if (_isTreasureFound)
+              const Positioned(
+                bottom: 50,
+                child: Text(
+                  'You Found It!',
+                  style: TextStyle(
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.green,
                   ),
-                ),
-              ),
-            ),
-            // Bat - Moves horizontally across the screen
-            AnimatedPositioned(
-              duration: const Duration(seconds: 2),
-              curve: Curves.easeInOut,
-              left: _batXPosition,
-              top: 50, 
-              child: GestureDetector(
-                onTap: moveCharacters, 
-                child: Image.asset(
-                  'assets/images/bat.png', // Replace with your bat image
-                  width: 150,
-                  height: 150,
-                  fit: BoxFit.cover,
-                ),
-              ),
-            ),
-            // Pumpkinhead - Visible when tapped
-            if (_isPumpkinVisible)
-              AnimatedOpacity(
-                duration: const Duration(seconds: 2),
-                opacity: _isPumpkinVisible ? 1.0 : 0.0,
-                child: Image.asset(
-                  'assets/images/Pumpkinhead.png', 
-                  width: 150,
-                  height: 150,
-                  fit: BoxFit.cover,
                 ),
               ),
           ],
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: moveCharacters,
-        child: const Icon(Icons.play_arrow),
+        onPressed: moveTreasure, // Move the treasure to a new random location
+        child: const Icon(Icons.refresh),
       ),
     );
   }
