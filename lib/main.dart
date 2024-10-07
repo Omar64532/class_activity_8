@@ -10,31 +10,33 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: FadingTextAnimation(),
+      home: SpookyCharacterAnimation(),
     );
   }
 }
 
-class FadingTextAnimation extends StatefulWidget {
-  const FadingTextAnimation({super.key});
+class SpookyCharacterAnimation extends StatefulWidget {
+  const SpookyCharacterAnimation({super.key});
 
   @override
-  _FadingTextAnimationState createState() => _FadingTextAnimationState();
+  _SpookyCharacterAnimationState createState() => _SpookyCharacterAnimationState();
 }
 
-class _FadingTextAnimationState extends State<FadingTextAnimation> {
+class _SpookyCharacterAnimationState extends State<SpookyCharacterAnimation> {
   bool _isVisible = true;
   double _rotationAngle = 0;
 
+  // Toggle visibility of a spooky character
   void toggleVisibility() {
     setState(() {
       _isVisible = !_isVisible;
     });
   }
 
-  void rotateDaGhost() {
+  // Rotate the spooky character
+  void rotateGhost() {
     setState(() {
-      _rotationAngle += 3.14 * 2; // 360 degrees rotation
+      _rotationAngle += 3.14 * 2; 
     });
   }
 
@@ -42,7 +44,7 @@ class _FadingTextAnimationState extends State<FadingTextAnimation> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Fading Text Animation // Click the Ghost!!!'),
+        title: const Text('Animated Spooky Characters'),
       ),
       body: Center(
         child: Column(
@@ -53,37 +55,31 @@ class _FadingTextAnimationState extends State<FadingTextAnimation> {
               child: AnimatedOpacity(
                 opacity: _isVisible ? 1.0 : 0.0,
                 duration: const Duration(seconds: 1),
-                curve: Curves.easeInOut, // Apply curve for smooth transition
+                curve: Curves.easeInOut, 
                 child: Column(
                   children: [
-                    const Text(
-                      'Hello, Flutter!',
-                      style: TextStyle(fontSize: 24),
-                    ),
                     const SizedBox(height: 20),
                     Image.asset(
-                      'assets/images/Pumpkinhead.png',
-                      width: 100,
-                      height: 100,
-                    ),
-                    GestureDetector(
-                      onTap: rotateDaGhost, // Trigger rotation on tap
-                      child: AnimatedContainer(
-                        duration: const Duration(seconds: 2),
-                        child: AnimatedRotation(
-                          turns: _rotationAngle /
-                              (2 * 3.14), // Full rotation (360 degrees)
-                          duration: const Duration(seconds: 2),
-                          child: Image.asset(
-                            'assets/images/ghost.png',
-                            width: 200,
-                            height: 200,
-                            fit: BoxFit.cover,
-                          ),
-                        ),
-                      ),
+                      'assets/images/ghost.png', 
+                      width: 200,
+                      height: 200,
+                      fit: BoxFit.cover,
                     ),
                   ],
+                ),
+              ),
+            ),
+            const SizedBox(height: 20),
+            GestureDetector(
+              onTap: rotateGhost,
+              child: AnimatedRotation(
+                turns: _rotationAngle / (2 * 3.14), 
+                duration: const Duration(seconds: 2),
+                child: Image.asset(
+                  'assets/images/bat.png', 
+                  width: 100,
+                  height: 100,
+                  fit: BoxFit.cover,
                 ),
               ),
             ),
