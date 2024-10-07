@@ -1,3 +1,5 @@
+/// Naved Noor, Hashim-Omar Omar
+
 import 'package:flutter/material.dart';
 import 'package:audioplayers/audioplayers.dart';
 
@@ -20,7 +22,8 @@ class SpookyCharacterAnimation extends StatefulWidget {
   const SpookyCharacterAnimation({super.key});
 
   @override
-  _SpookyCharacterAnimationState createState() => _SpookyCharacterAnimationState();
+  _SpookyCharacterAnimationState createState() =>
+      _SpookyCharacterAnimationState();
 }
 
 class _SpookyCharacterAnimationState extends State<SpookyCharacterAnimation> {
@@ -45,7 +48,7 @@ class _SpookyCharacterAnimationState extends State<SpookyCharacterAnimation> {
   // Rotate the spooky character
   void rotateGhost() {
     setState(() {
-      _rotationAngle += 3.14 * 2; 
+      _rotationAngle += 3.14 * 2;
     });
   }
 
@@ -76,12 +79,12 @@ class _SpookyCharacterAnimationState extends State<SpookyCharacterAnimation> {
               child: AnimatedOpacity(
                 opacity: _isVisible ? 1.0 : 0.0,
                 duration: const Duration(seconds: 1),
-                curve: Curves.easeInOut, 
+                curve: Curves.easeInOut,
                 child: Column(
                   children: [
                     const SizedBox(height: 20),
                     Image.asset(
-                      'assets/images/ghost.png', 
+                      'assets/images/ghost.png',
                       width: 200,
                       height: 200,
                       fit: BoxFit.cover,
@@ -94,10 +97,10 @@ class _SpookyCharacterAnimationState extends State<SpookyCharacterAnimation> {
             GestureDetector(
               onTap: rotateGhost,
               child: AnimatedRotation(
-                turns: _rotationAngle / (2 * 3.14), 
+                turns: _rotationAngle / (2 * 3.14),
                 duration: const Duration(seconds: 2),
                 child: Image.asset(
-                  'assets/images/bat.png', 
+                  'assets/images/bat.png',
                   width: 100,
                   height: 100,
                   fit: BoxFit.cover,
